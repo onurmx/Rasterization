@@ -38,6 +38,10 @@ namespace Rasterization
             comboBox2.Items.Add("7");
             comboBox2.SelectedIndex = 0;
         }
+        private void clearCanvasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+        }
 
         private void button2_Click(object sender, EventArgs e)
         {
