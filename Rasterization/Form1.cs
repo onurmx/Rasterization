@@ -113,17 +113,17 @@ namespace Rasterization
                         CanvasLogic.tmpLine.Antialiasing = checkBox1.Checked ? true : false;
 
                         if (CanvasLogic.tmpLine.Antialiasing == false &&
-                            comboBox1.SelectedIndex == 0)
+                            comboBox2.SelectedIndex == 0)
                         {
                             pictureBox1.Image = LineDrawing.lineDDA(CanvasLogic.tmpLine, pictureBox1.Image);
                         }
                         else if (CanvasLogic.tmpLine.Antialiasing == false &&
-                                 comboBox1.SelectedIndex != 0)
+                                 comboBox2.SelectedIndex != 0)
                         {
                             pictureBox1.Image = LineDrawing.lineDDA_thick(CanvasLogic.tmpLine, pictureBox1.Image);
                         }
                         else if (CanvasLogic.tmpLine.Antialiasing == true &&
-                                 comboBox1.SelectedIndex == 0)
+                                 comboBox2.SelectedIndex == 0)
                         {
                             pictureBox1.Image = LineDrawing.WuLine(CanvasLogic.tmpLine, pictureBox1.Image);
                         }
