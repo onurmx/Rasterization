@@ -17,6 +17,8 @@ namespace Rasterization
         Database Database = new Database();
 
         CanvasLogic CanvasLogic = new CanvasLogic();
+        ObjectMotion ObjectMotion = new ObjectMotion();
+
         CircleDrawing CircleDrawing = new CircleDrawing();
         LineDrawing LineDrawing = new LineDrawing();
         PolygonDrawing PolygonDrawing = new PolygonDrawing();
@@ -113,6 +115,10 @@ namespace Rasterization
         {
             switch (CanvasLogic.DrawingMode)
             {
+                case 0:
+                    ObjectMotion.InitialMouseLocation = e.Location;
+                    ObjectMotion.LockTargetObject(Database);
+                    break;
                 case 1:
                     if (e.X + GetValueFromTextBox(textBox1) < pictureBox1.Width &&
                         e.X - GetValueFromTextBox(textBox1) > 0 &&
@@ -173,6 +179,27 @@ namespace Rasterization
                     break;
                 case 3:
                     CanvasLogic.tmpPolygon.Points.Add(new Point(e.X, e.Y));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (ObjectMotion.isLocked)
+            {
+                ObjectMotion.MoveTargetObject(e.Location);
+                pictureBox1.Image = Redrawer();
+            }
+        }
+
+        private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
+        {
+            switch (CanvasLogic.DrawingMode)
+            {
+                case 0:
+                    ObjectMotion = new ObjectMotion();
                     break;
                 default:
                     break;

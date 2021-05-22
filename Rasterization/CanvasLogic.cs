@@ -8,7 +8,7 @@ namespace Rasterization
 {
     public class CanvasLogic
     {
-        public int DrawingMode { get; set; } = 0; //0-Disabled
+        public int DrawingMode { get; set; } = 0; //0-Disabled(Object Motion Mode)
                                                   //1-Circle
                                                   //2-Line
                                                   //3-Polygon(Start Recording)
