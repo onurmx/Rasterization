@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace Rasterization
 {
     public partial class Form1 : Form
     {
+        Database Database = new Database();
+
         CanvasLogic CanvasLogic = new CanvasLogic();
         CircleDrawing CircleDrawing = new CircleDrawing();
         LineDrawing LineDrawing = new LineDrawing();
@@ -38,6 +42,34 @@ namespace Rasterization
             comboBox2.Items.Add("7");
             comboBox2.SelectedIndex = 0;
         }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Serialization serialization = new Serialization();
+            serialization.Formatter(Database.Circles, Database.Lines, Database.Polygons);
+            XmlSerializer serializer = new XmlSerializer(typeof(ShapesSerializableStruct));
+            TextWriter filestream = new StreamWriter(@".\output.xml");
+            serializer.Serialize(filestream, serialization.shapesSerializableStruct);
+            filestream.Close();
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Serialization serialization = new Serialization();
+            XmlSerializer serializer = new XmlSerializer(typeof(ShapesSerializableStruct));
+            TextReader filestream = new StreamReader(@".\output.xml");
+
+            ShapesSerializableStruct shapesSerializableStruct = (ShapesSerializableStruct)serializer.Deserialize(filestream);
+            filestream.Close();
+
+            serialization.DeFormatter(shapesSerializableStruct);
+            Database.Circles = serialization.circles;
+            Database.Lines = serialization.lines;
+            Database.Polygons = serialization.polygons;
+
+            pictureBox1.Image = Redrawer();
+        }
+
         private void clearCanvasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
@@ -72,6 +104,7 @@ namespace Rasterization
                 pictureBox1.Image = PolygonDrawing.DrawPolygon_Antialiasing(CanvasLogic.tmpPolygon, pictureBox1.Image);
             }
 
+            Database.Polygons.Add(CanvasLogic.tmpPolygon);
             CanvasLogic.tmpPolygon = new Polygon();
             CanvasLogic.DrawingMode = 0;
         }
@@ -100,6 +133,7 @@ namespace Rasterization
                             pictureBox1.Image = CircleDrawing.MidpointCircle(CanvasLogic.tmpCircle, pictureBox1.Image);
                         }
 
+                        Database.Circles.Add(CanvasLogic.tmpCircle);
                         CanvasLogic.tmpCircle = new Circle();
                         CanvasLogic.DrawingMode = 0;
                     }
@@ -132,6 +166,7 @@ namespace Rasterization
                             pictureBox1.Image = LineDrawing.WuLine(CanvasLogic.tmpLine, pictureBox1.Image);
                         }
 
+                        Database.Lines.Add(CanvasLogic.tmpLine);
                         CanvasLogic.tmpLine = new Line();
                         CanvasLogic.DrawingMode = 0;
                     }
@@ -164,6 +199,51 @@ namespace Rasterization
         private int GetValueFromTextBox(TextBox textBox)
         {
             return int.Parse(textBox.Text.ToString());
+        }
+
+        private Image Redrawer()
+        {
+            Image tmpImage = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+
+            foreach (Circle circle in Database.Circles)
+            {
+                if (circle.Antialiasing == true)
+                {
+                    tmpImage = CircleDrawing.WuCircle(circle, tmpImage);
+                }
+                else
+                {
+                    tmpImage = CircleDrawing.MidpointCircle(circle, tmpImage);
+                }
+            }
+            foreach (Line line in Database.Lines)
+            {
+                if (line.Antialiasing == false && line.Thickness == 1)
+                {
+                    tmpImage = LineDrawing.lineDDA(line, tmpImage);
+                }
+                if (line.Antialiasing == false && line.Thickness != 1)
+                {
+                    tmpImage = LineDrawing.lineDDA_thick(line, tmpImage);
+                }
+                if (line.Antialiasing = true && line.Thickness == 1)
+                {
+                    tmpImage = LineDrawing.WuLine(line, tmpImage);
+                }
+            }
+            foreach (Polygon polygon in Database.Polygons)
+            {
+                if (polygon.Antialiasing == true)
+                {
+                    tmpImage = PolygonDrawing.DrawPolygon_Antialiasing(polygon, tmpImage);
+                }
+                else
+                {
+                    tmpImage = PolygonDrawing.DrawPolygon_DDA(polygon, tmpImage);
+                }
+            }
+
+            return tmpImage;
         }
     }
 }
