@@ -24,6 +24,8 @@ namespace Rasterization
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+
             comboBox1.Items.Add("Black");
             comboBox1.Items.Add("Red");
             comboBox1.Items.Add("Green");
@@ -50,12 +52,23 @@ namespace Rasterization
         private void button3_Click(object sender, EventArgs e)
         {
             CanvasLogic.DrawingMode = 3;
+            CanvasLogic.tmpPolygon.Points = new List<Point>();
+            CanvasLogic.tmpPolygon.Color = GetSelectedColor();
+            CanvasLogic.tmpPolygon.Antialiasing = checkBox3.Checked ? true : false;
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            CanvasLogic.tmpPolygon.Color = GetSelectedColor();
-            CanvasLogic.tmpPolygon.Antialiasing = checkBox3.Checked ? true : false;
+            if (CanvasLogic.tmpPolygon.Antialiasing == false)
+            {
+                pictureBox1.Image = PolygonDrawing.DrawPolygon_DDA(CanvasLogic.tmpPolygon, pictureBox1.Image);
+            }
+            if (CanvasLogic.tmpPolygon.Antialiasing == true)
+            {
+                pictureBox1.Image = PolygonDrawing.DrawPolygon_Antialiasing(CanvasLogic.tmpPolygon, pictureBox1.Image);
+            }
+
+            CanvasLogic.tmpPolygon = new Polygon();
             CanvasLogic.DrawingMode = 0;
         }
 
@@ -69,11 +82,19 @@ namespace Rasterization
                         e.Y + GetValueFromTextBox(textBox1) < pictureBox1.Height &&
                         e.Y - GetValueFromTextBox(textBox1) > 0)
                     {
-                        MessageBox.Show("circle");
                         CanvasLogic.tmpCircle.Center = new Point(e.X, e.Y);
                         CanvasLogic.tmpCircle.Radius = int.Parse(textBox1.Text.ToString());
                         CanvasLogic.tmpCircle.Color = GetSelectedColor();
                         CanvasLogic.tmpCircle.Antialiasing = checkBox2.Checked ? true : false;
+
+                        if (CanvasLogic.tmpCircle.Antialiasing)
+                        {
+                            pictureBox1.Image = CircleDrawing.WuCircle(CanvasLogic.tmpCircle, pictureBox1.Image);
+                        }
+                        else
+                        {
+                            pictureBox1.Image = CircleDrawing.MidpointCircle(CanvasLogic.tmpCircle, pictureBox1.Image);
+                        }
 
                         CanvasLogic.tmpCircle = new Circle();
                         CanvasLogic.DrawingMode = 0;
@@ -90,6 +111,22 @@ namespace Rasterization
                         CanvasLogic.tmpLine.Color = GetSelectedColor();
                         CanvasLogic.tmpLine.Thickness = int.Parse(comboBox2.Items[comboBox2.SelectedIndex].ToString());
                         CanvasLogic.tmpLine.Antialiasing = checkBox1.Checked ? true : false;
+
+                        if (CanvasLogic.tmpLine.Antialiasing == false &&
+                            comboBox1.SelectedIndex == 0)
+                        {
+                            pictureBox1.Image = LineDrawing.lineDDA(CanvasLogic.tmpLine, pictureBox1.Image);
+                        }
+                        else if (CanvasLogic.tmpLine.Antialiasing == false &&
+                                 comboBox1.SelectedIndex != 0)
+                        {
+                            pictureBox1.Image = LineDrawing.lineDDA_thick(CanvasLogic.tmpLine, pictureBox1.Image);
+                        }
+                        else if (CanvasLogic.tmpLine.Antialiasing == true &&
+                                 comboBox1.SelectedIndex == 0)
+                        {
+                            pictureBox1.Image = LineDrawing.WuLine(CanvasLogic.tmpLine, pictureBox1.Image);
+                        }
 
                         CanvasLogic.tmpLine = new Line();
                         CanvasLogic.DrawingMode = 0;
