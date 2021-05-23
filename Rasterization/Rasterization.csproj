@@ -52,6 +52,8 @@
     <Compile Include="Drawing Algorithms\LineDrawing.cs" />
     <Compile Include="Drawing Algorithms\PolygonDrawing.cs" />
     <Compile Include="Drawing Algorithms\RectangleDrawing.cs" />
+    <Compile Include="Filling Algorithm\EdgeTableEntry.cs" />
+    <Compile Include="Filling Algorithm\Filling.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

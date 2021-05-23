@@ -23,6 +23,7 @@ namespace Rasterization
         LineDrawing LineDrawing = new LineDrawing();
         PolygonDrawing PolygonDrawing = new PolygonDrawing();
         RectangleDrawing RectangleDrawing = new RectangleDrawing();
+        Filling Filling = new Filling();
 
         public Form1()
         {
@@ -113,6 +114,13 @@ namespace Rasterization
             CanvasLogic.DrawingMode = 4;
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            //Filling filling = new Filling();
+
+            //pictureBox1.Image = filling.FillPolygon(Database.Polygons[0], pictureBox1.Image);
+        }
+
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -185,12 +193,12 @@ namespace Rasterization
                         break;
                 }
             }
-            if(e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 ObjectMotion.InitialMouseLocation = e.Location;
                 ObjectMotion.LockTargetRectangle_MoveVertice(Database);
             }
-            if(e.Button == MouseButtons.Middle)
+            if (e.Button == MouseButtons.Middle)
             {
                 ObjectMotion.InitialMouseLocation = e.Location;
                 ObjectMotion.LockTargetRectangle_MoveRectangle(Database);
@@ -320,6 +328,6 @@ namespace Rasterization
             pictureBox1.Image = bitmap;
         }
 
-        
+
     }
 }
