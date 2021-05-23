@@ -75,6 +75,9 @@ namespace Rasterization
         private void clearCanvasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            Database.Circles.Clear();
+            Database.Lines.Clear();
+            Database.Polygons.Clear();
         }
 
         private void button2_Click(object sender, EventArgs e)
