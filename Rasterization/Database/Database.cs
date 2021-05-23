@@ -11,5 +11,6 @@ namespace Rasterization
         public List<Circle> Circles { get; set; } = new List<Circle>();
         public List<Line> Lines { get; set; } = new List<Line>();
         public List<Polygon> Polygons { get; set; } = new List<Polygon>();
+        public List<Rectangle> Rectangles { get; set; } = new List<Rectangle>();
     }
 }

@@ -12,6 +12,7 @@ namespace Rasterization
     {
         private object TargetObject { get; set; }
         private object InitialTargetObjectProperty { get; set; }
+        private object InitialTargetObjectProperty2 { get; set; }
         private int LineMotionMode { get; set; } = 0; // 1-StartPoint, 2-EndPoint
         public Point InitialMouseLocation { get; set; } = new Point();
         public bool isLocked { get; set; } = false;
@@ -71,35 +72,232 @@ namespace Rasterization
                     }
                 }
             }
+            foreach (Rectangle rectangle in database.Rectangles)
+            {
+                if (InitialMouseLocation == rectangle.TopLeft)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.TopLeft;
+                    LineMotionMode = 1;
+                    isLocked = true;
+                    return;
+                }
+                if (InitialMouseLocation == rectangle.BottomRight)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.BottomRight;
+                    LineMotionMode = 2;
+                    isLocked = true;
+                    return;
+                }
+            }
         }
 
-        public void MoveTargetObject(Point MousePosition)
+        public void LockTargetRectangle_MoveVertice(Database database)
         {
-            if (TargetObject is Circle)
+            foreach (Rectangle rectangle in database.Rectangles)
             {
-                ((Circle)TargetObject).Center = new Point(((Point)InitialTargetObjectProperty).X + Difference(MousePosition).X,
-                                                          ((Point)InitialTargetObjectProperty).Y + Difference(MousePosition).Y);
+                if ((InitialMouseLocation.Y == rectangle.TopLeft.Y) &&
+                     rectangle.TopLeft.X < InitialMouseLocation.X &&
+                     InitialMouseLocation.X < rectangle.BottomRight.X)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.TopLeft;
+                    LineMotionMode = 1;
+                    isLocked = true;
+                    return;
+                }
+                if ((InitialMouseLocation.Y == rectangle.BottomRight.Y) &&
+                     rectangle.TopLeft.X < InitialMouseLocation.X &&
+                     InitialMouseLocation.X < rectangle.BottomRight.X)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.BottomRight;
+                    LineMotionMode = 2;
+                    isLocked = true;
+                    return;
+                }
+                if ((InitialMouseLocation.X == rectangle.TopLeft.X) &&
+                     rectangle.TopLeft.Y < InitialMouseLocation.Y &&
+                     InitialMouseLocation.Y < rectangle.BottomRight.Y)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.TopLeft;
+                    LineMotionMode = 3;
+                    isLocked = true;
+                    return;
+                }
+                if ((InitialMouseLocation.X == rectangle.BottomRight.X) &&
+                     rectangle.TopLeft.Y < InitialMouseLocation.Y &&
+                     InitialMouseLocation.Y < rectangle.BottomRight.Y)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.BottomRight;
+                    LineMotionMode = 4;
+                    isLocked = true;
+                    return;
+                }
             }
-            if (TargetObject is Line)
+        }
+
+        public void LockTargetRectangle_MoveRectangle(Database database)
+        {
+            foreach (Rectangle rectangle in database.Rectangles)
+            {
+                if ((InitialMouseLocation.Y == rectangle.TopLeft.Y) &&
+                     rectangle.TopLeft.X < InitialMouseLocation.X &&
+                     InitialMouseLocation.X < rectangle.BottomRight.X)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.TopLeft;
+                    InitialTargetObjectProperty2 = rectangle.BottomRight;
+                    isLocked = true;
+                    return;
+                }
+                if ((InitialMouseLocation.Y == rectangle.BottomRight.Y) &&
+                     rectangle.TopLeft.X < InitialMouseLocation.X &&
+                     InitialMouseLocation.X < rectangle.BottomRight.X)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.TopLeft;
+                    InitialTargetObjectProperty2 = rectangle.BottomRight;
+                    isLocked = true;
+                    return;
+                }
+                if ((InitialMouseLocation.X == rectangle.TopLeft.X) &&
+                     rectangle.TopLeft.Y < InitialMouseLocation.Y &&
+                     InitialMouseLocation.Y < rectangle.BottomRight.Y)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.TopLeft;
+                    InitialTargetObjectProperty2 = rectangle.BottomRight;
+                    isLocked = true;
+                    return;
+                }
+                if ((InitialMouseLocation.X == rectangle.BottomRight.X) &&
+                     rectangle.TopLeft.Y < InitialMouseLocation.Y &&
+                     InitialMouseLocation.Y < rectangle.BottomRight.Y)
+                {
+                    TargetObject = rectangle;
+                    InitialTargetObjectProperty = rectangle.TopLeft;
+                    InitialTargetObjectProperty2 = rectangle.BottomRight;
+                    isLocked = true;
+                    return;
+                }
+            }
+        }
+
+        public void MoveTargetObject(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (TargetObject is Circle)
+                {
+                    ((Circle)TargetObject).Center = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                              ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
+                }
+                if (TargetObject is Line)
+                {
+                    if (LineMotionMode == 1)
+                    {
+                        ((Line)TargetObject).StartPoint = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                                    ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
+                    }
+                    if (LineMotionMode == 2)
+                    {
+                        ((Line)TargetObject).EndPoint = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                                  ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
+                    }
+                }
+                if (TargetObject is Polygon)
+                {
+                    ((Polygon)TargetObject).Points = ((List<Point>)InitialTargetObjectProperty).Select(p =>
+                    {
+                        return new Point(p.X + Difference(e.Location).X, p.Y + Difference(e.Location).Y);
+                    }).ToList();
+                }
+                if (TargetObject is Rectangle)
+                {
+                    if (LineMotionMode == 1)
+                    {
+                        ((Rectangle)TargetObject).TopLeft = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                                      ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
+                    }
+                    if (LineMotionMode == 2)
+                    {
+                        ((Rectangle)TargetObject).BottomRight = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                                          ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
+                    }
+                }
+            }
+            if (e.Button == MouseButtons.Right)
             {
                 if (LineMotionMode == 1)
                 {
-                    ((Line)TargetObject).StartPoint = new Point(((Point)InitialTargetObjectProperty).X + Difference(MousePosition).X,
-                                                                ((Point)InitialTargetObjectProperty).Y + Difference(MousePosition).Y);
+                    ((Rectangle)TargetObject).TopLeft = new Point(((Point)InitialTargetObjectProperty).X,
+                                                                  ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
                 }
                 if (LineMotionMode == 2)
                 {
-                    ((Line)TargetObject).EndPoint = new Point(((Point)InitialTargetObjectProperty).X + Difference(MousePosition).X,
-                                                              ((Point)InitialTargetObjectProperty).Y + Difference(MousePosition).Y);
+                    ((Rectangle)TargetObject).BottomRight = new Point(((Point)InitialTargetObjectProperty).X,
+                                                                      ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
+                }
+                if (LineMotionMode == 3)
+                {
+                    ((Rectangle)TargetObject).TopLeft = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                                  ((Point)InitialTargetObjectProperty).Y);
+                }
+                if (LineMotionMode == 4)
+                {
+                    ((Rectangle)TargetObject).BottomRight = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                                      ((Point)InitialTargetObjectProperty).Y);
                 }
             }
-            if (TargetObject is Polygon)
+            if (e.Button == MouseButtons.Middle)
             {
-                ((Polygon)TargetObject).Points = ((List<Point>)InitialTargetObjectProperty).Select(p =>
-                {
-                    return new Point(p.X + Difference(MousePosition).X, p.Y + Difference(MousePosition).Y);
-                }).ToList();
+                ((Rectangle)TargetObject).TopLeft = new Point(((Point)InitialTargetObjectProperty).X + Difference(e.Location).X,
+                                                              ((Point)InitialTargetObjectProperty).Y + Difference(e.Location).Y);
+                ((Rectangle)TargetObject).BottomRight = new Point(((Point)InitialTargetObjectProperty2).X + Difference(e.Location).X,
+                                                                  ((Point)InitialTargetObjectProperty2).Y + Difference(e.Location).Y);
+
             }
+        }
+
+        public void DeleteRectangle(Database database)
+        {
+            foreach (Rectangle rectangle in database.Rectangles)
+            {
+                if ((InitialMouseLocation.Y == rectangle.TopLeft.Y) &&
+                     rectangle.TopLeft.X < InitialMouseLocation.X &&
+                     InitialMouseLocation.X < rectangle.BottomRight.X)
+                {
+                    TargetObject = rectangle;
+                    break;
+                }
+                if ((InitialMouseLocation.Y == rectangle.BottomRight.Y) &&
+                     rectangle.TopLeft.X < InitialMouseLocation.X &&
+                     InitialMouseLocation.X < rectangle.BottomRight.X)
+                {
+                    TargetObject = rectangle;
+                    break;
+                }
+                if ((InitialMouseLocation.X == rectangle.TopLeft.X) &&
+                     rectangle.TopLeft.Y < InitialMouseLocation.Y &&
+                     InitialMouseLocation.Y < rectangle.BottomRight.Y)
+                {
+                    TargetObject = rectangle;
+                    break;
+                }
+                if ((InitialMouseLocation.X == rectangle.BottomRight.X) &&
+                     rectangle.TopLeft.Y < InitialMouseLocation.Y &&
+                     InitialMouseLocation.Y < rectangle.BottomRight.Y)
+                {
+                    TargetObject = rectangle;
+                    break;
+                }
+            }
+
+            database.Rectangles.Remove((Rectangle)TargetObject);
         }
     }
 }

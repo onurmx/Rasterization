@@ -51,6 +51,7 @@
     <Compile Include="Drawing Algorithms\CircleDrawing.cs" />
     <Compile Include="Drawing Algorithms\LineDrawing.cs" />
     <Compile Include="Drawing Algorithms\PolygonDrawing.cs" />
+    <Compile Include="Drawing Algorithms\RectangleDrawing.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +65,7 @@
     <Compile Include="Shapes\Circle.cs" />
     <Compile Include="Shapes\Line.cs" />
     <Compile Include="Shapes\Polygon.cs" />
+    <Compile Include="Shapes\Rectangle.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

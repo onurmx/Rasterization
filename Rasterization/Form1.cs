@@ -22,6 +22,7 @@ namespace Rasterization
         CircleDrawing CircleDrawing = new CircleDrawing();
         LineDrawing LineDrawing = new LineDrawing();
         PolygonDrawing PolygonDrawing = new PolygonDrawing();
+        RectangleDrawing RectangleDrawing = new RectangleDrawing();
 
         public Form1()
         {
@@ -107,66 +108,116 @@ namespace Rasterization
             Redrawer();
         }
 
+        private void button5_Click(object sender, EventArgs e)
+        {
+            CanvasLogic.DrawingMode = 4;
+        }
+
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
-            switch (CanvasLogic.DrawingMode)
+            if (e.Button == MouseButtons.Left)
             {
-                case 0:
-                    ObjectMotion.InitialMouseLocation = e.Location;
-                    ObjectMotion.LockTargetObject(Database);
-                    break;
-                case 1:
-                    if (e.X + GetValueFromTextBox(textBox1) < pictureBox1.Width &&
-                        e.X - GetValueFromTextBox(textBox1) > 0 &&
-                        e.Y + GetValueFromTextBox(textBox1) < pictureBox1.Height &&
-                        e.Y - GetValueFromTextBox(textBox1) > 0)
-                    {
-                        CanvasLogic.tmpCircle.Center = new Point(e.X, e.Y);
-                        CanvasLogic.tmpCircle.Radius = int.Parse(textBox1.Text.ToString());
-                        CanvasLogic.tmpCircle.Color = GetSelectedColor();
-                        CanvasLogic.tmpCircle.Antialiasing = checkBox2.Checked ? true : false;
+                switch (CanvasLogic.DrawingMode)
+                {
+                    case 0:
+                        ObjectMotion.InitialMouseLocation = e.Location;
+                        ObjectMotion.LockTargetObject(Database);
+                        break;
+                    case 1:
+                        if (e.X + GetValueFromTextBox(textBox1) < pictureBox1.Width &&
+                            e.X - GetValueFromTextBox(textBox1) > 0 &&
+                            e.Y + GetValueFromTextBox(textBox1) < pictureBox1.Height &&
+                            e.Y - GetValueFromTextBox(textBox1) > 0 &&
+                            textBox1.Text != "")
+                        {
+                            CanvasLogic.tmpCircle.Center = new Point(e.X, e.Y);
+                            CanvasLogic.tmpCircle.Radius = int.Parse(textBox1.Text.ToString());
+                            CanvasLogic.tmpCircle.Color = GetSelectedColor();
+                            CanvasLogic.tmpCircle.Antialiasing = checkBox2.Checked ? true : false;
 
-                        Database.Circles.Add(CanvasLogic.tmpCircle);
-                        CanvasLogic.tmpCircle = new Circle();
-                        CanvasLogic.DrawingMode = 0;
+                            Database.Circles.Add(CanvasLogic.tmpCircle);
+                            CanvasLogic.tmpCircle = new Circle();
+                            CanvasLogic.DrawingMode = 0;
 
-                        Redrawer();
-                    }
-                    break;
-                case 2:
-                    if (CanvasLogic.tmpLine.StartPoint == ((new Line()).StartPoint))
-                    {
-                        CanvasLogic.tmpLine.StartPoint = new Point(e.X, e.Y);
-                    }
-                    else
-                    {
-                        CanvasLogic.tmpLine.EndPoint = new Point(e.X, e.Y);
-                        CanvasLogic.tmpLine.Color = GetSelectedColor();
-                        CanvasLogic.tmpLine.Thickness = int.Parse(comboBox2.Items[comboBox2.SelectedIndex].ToString());
-                        CanvasLogic.tmpLine.Antialiasing = checkBox1.Checked ? true : false;
+                            Redrawer();
+                        }
+                        break;
+                    case 2:
+                        if (CanvasLogic.tmpLine.StartPoint == ((new Line()).StartPoint))
+                        {
+                            CanvasLogic.tmpLine.StartPoint = new Point(e.X, e.Y);
+                        }
+                        else
+                        {
+                            CanvasLogic.tmpLine.EndPoint = new Point(e.X, e.Y);
+                            CanvasLogic.tmpLine.Color = GetSelectedColor();
+                            CanvasLogic.tmpLine.Thickness = int.Parse(comboBox2.Items[comboBox2.SelectedIndex].ToString());
+                            CanvasLogic.tmpLine.Antialiasing = checkBox1.Checked ? true : false;
 
-                        Database.Lines.Add(CanvasLogic.tmpLine);
-                        CanvasLogic.tmpLine = new Line();
-                        CanvasLogic.DrawingMode = 0;
+                            Database.Lines.Add(CanvasLogic.tmpLine);
+                            CanvasLogic.tmpLine = new Line();
+                            CanvasLogic.DrawingMode = 0;
 
-                        Redrawer();
-                    }
-                    break;
-                case 3:
-                    CanvasLogic.tmpPolygon.Points.Add(new Point(e.X, e.Y));
-                    break;
-                default:
-                    break;
+                            Redrawer();
+                        }
+                        break;
+                    case 3:
+                        CanvasLogic.tmpPolygon.Points.Add(new Point(e.X, e.Y));
+                        break;
+                    case 4:
+                        if (CanvasLogic.tmpRectangle.TopLeft == (new Rectangle()).TopLeft)
+                        {
+                            CanvasLogic.tmpRectangle.TopLeft = e.Location;
+                        }
+                        else
+                        {
+                            CanvasLogic.tmpRectangle.BottomRight = e.Location;
+                            CanvasLogic.tmpRectangle.Color = GetSelectedColor();
+
+                            Database.Rectangles.Add(CanvasLogic.tmpRectangle);
+                            CanvasLogic.tmpRectangle = new Rectangle();
+                            CanvasLogic.DrawingMode = 0;
+
+                            Redrawer();
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
+            if(e.Button == MouseButtons.Right)
+            {
+                ObjectMotion.InitialMouseLocation = e.Location;
+                ObjectMotion.LockTargetRectangle_MoveVertice(Database);
+            }
+            if(e.Button == MouseButtons.Middle)
+            {
+                ObjectMotion.InitialMouseLocation = e.Location;
+                ObjectMotion.LockTargetRectangle_MoveRectangle(Database);
+            }
+        }
+
+        private void pictureBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ObjectMotion.InitialMouseLocation = e.Location;
+            ObjectMotion.DeleteRectangle(Database);
+
+            ObjectMotion = new ObjectMotion();
+            Redrawer();
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (ObjectMotion.isLocked)
+            if (ObjectMotion.isLocked &&
+                0 < e.Location.X &&
+                e.Location.X < pictureBox1.Width &&
+                0 < e.Location.Y &&
+                e.Location.Y < pictureBox1.Height)
             {
-                ObjectMotion.MoveTargetObject(e.Location);
+                ObjectMotion.MoveTargetObject(e);
                 Redrawer();
             }
+
         }
 
         private void pictureBox1_MouseUp(object sender, MouseEventArgs e)
@@ -200,7 +251,11 @@ namespace Rasterization
 
         private int GetValueFromTextBox(TextBox textBox)
         {
-            return int.Parse(textBox.Text.ToString());
+            if (textBox.Text != "")
+            {
+                return int.Parse(textBox.Text.ToString());
+            }
+            return 0;
         }
 
         private void Redrawer()
@@ -257,8 +312,14 @@ namespace Rasterization
                         break;
                 }
             }
+            foreach (Rectangle rectangle in Database.Rectangles)
+            {
+                RectangleDrawing.DrawRectangle_DDA(rectangle, bitmap);
+            }
 
             pictureBox1.Image = bitmap;
         }
+
+        
     }
 }
