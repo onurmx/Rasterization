@@ -9,10 +9,8 @@ namespace Rasterization
 {
     public class CircleDrawing
     {
-        public Image MidpointCircle(Circle circle, Image image)
+        public void MidpointCircle(Circle circle, Bitmap bitmap)
         {
-            Bitmap bitmap = new Bitmap(image);
-
             int d = 1 - circle.Radius;
             int x = 0;
             int y = circle.Radius;
@@ -42,14 +40,10 @@ namespace Rasterization
                 bitmap.SetPixel(circle.Center.X + y, circle.Center.Y - x, circle.Color);
                 bitmap.SetPixel(circle.Center.X + x, circle.Center.Y - y, circle.Color);
             }
-
-            return bitmap;
         }
 
-        public Image WuCircle(Circle circle, Image image)
+        public void WuCircle(Circle circle, Bitmap bitmap)
         {
-            Bitmap bitmap = new Bitmap(image);
-
             Color L = circle.Color; /*Line color*/
             Color B = Color.FromArgb(255, 255, 255, 255); /*Background Color*/
             int x = circle.Radius;
@@ -100,8 +94,6 @@ namespace Rasterization
                 bitmap.SetPixel(circle.Center.X + x, circle.Center.Y - y, c2);
                 bitmap.SetPixel(circle.Center.X + x - 1, circle.Center.Y - y, c1);
             }
-
-            return bitmap;
         }
 
         public float D(int R, int y)

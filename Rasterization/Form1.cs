@@ -69,7 +69,7 @@ namespace Rasterization
             Database.Lines = serialization.lines;
             Database.Polygons = serialization.polygons;
 
-            pictureBox1.Image = Redrawer();
+            Redrawer();
         }
 
         private void clearCanvasToolStripMenuItem_Click(object sender, EventArgs e)
@@ -100,18 +100,11 @@ namespace Rasterization
 
         private void button4_Click(object sender, EventArgs e)
         {
-            if (CanvasLogic.tmpPolygon.Antialiasing == false)
-            {
-                pictureBox1.Image = PolygonDrawing.DrawPolygon_DDA(CanvasLogic.tmpPolygon, pictureBox1.Image);
-            }
-            if (CanvasLogic.tmpPolygon.Antialiasing == true)
-            {
-                pictureBox1.Image = PolygonDrawing.DrawPolygon_Antialiasing(CanvasLogic.tmpPolygon, pictureBox1.Image);
-            }
-
             Database.Polygons.Add(CanvasLogic.tmpPolygon);
             CanvasLogic.tmpPolygon = new Polygon();
             CanvasLogic.DrawingMode = 0;
+
+            Redrawer();
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -133,18 +126,11 @@ namespace Rasterization
                         CanvasLogic.tmpCircle.Color = GetSelectedColor();
                         CanvasLogic.tmpCircle.Antialiasing = checkBox2.Checked ? true : false;
 
-                        if (CanvasLogic.tmpCircle.Antialiasing)
-                        {
-                            pictureBox1.Image = CircleDrawing.WuCircle(CanvasLogic.tmpCircle, pictureBox1.Image);
-                        }
-                        else
-                        {
-                            pictureBox1.Image = CircleDrawing.MidpointCircle(CanvasLogic.tmpCircle, pictureBox1.Image);
-                        }
-
                         Database.Circles.Add(CanvasLogic.tmpCircle);
                         CanvasLogic.tmpCircle = new Circle();
                         CanvasLogic.DrawingMode = 0;
+
+                        Redrawer();
                     }
                     break;
                 case 2:
@@ -159,25 +145,11 @@ namespace Rasterization
                         CanvasLogic.tmpLine.Thickness = int.Parse(comboBox2.Items[comboBox2.SelectedIndex].ToString());
                         CanvasLogic.tmpLine.Antialiasing = checkBox1.Checked ? true : false;
 
-                        if (CanvasLogic.tmpLine.Antialiasing == false &&
-                            comboBox2.SelectedIndex == 0)
-                        {
-                            pictureBox1.Image = LineDrawing.lineDDA(CanvasLogic.tmpLine, pictureBox1.Image);
-                        }
-                        else if (CanvasLogic.tmpLine.Antialiasing == false &&
-                                 comboBox2.SelectedIndex != 0)
-                        {
-                            pictureBox1.Image = LineDrawing.lineDDA_thick(CanvasLogic.tmpLine, pictureBox1.Image);
-                        }
-                        else if (CanvasLogic.tmpLine.Antialiasing == true &&
-                                 comboBox2.SelectedIndex == 0)
-                        {
-                            pictureBox1.Image = LineDrawing.WuLine(CanvasLogic.tmpLine, pictureBox1.Image);
-                        }
-
                         Database.Lines.Add(CanvasLogic.tmpLine);
                         CanvasLogic.tmpLine = new Line();
                         CanvasLogic.DrawingMode = 0;
+
+                        Redrawer();
                     }
                     break;
                 case 3:
@@ -193,7 +165,7 @@ namespace Rasterization
             if (ObjectMotion.isLocked)
             {
                 ObjectMotion.MoveTargetObject(e.Location);
-                pictureBox1.Image = Redrawer();
+                Redrawer();
             }
         }
 
@@ -231,49 +203,49 @@ namespace Rasterization
             return int.Parse(textBox.Text.ToString());
         }
 
-        private Image Redrawer()
+        private void Redrawer()
         {
-            Image tmpImage = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+            Bitmap bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
 
             foreach (Circle circle in Database.Circles)
             {
                 if (circle.Antialiasing == true)
                 {
-                    tmpImage = CircleDrawing.WuCircle(circle, tmpImage);
+                    CircleDrawing.WuCircle(circle, bitmap);
                 }
                 else
                 {
-                    tmpImage = CircleDrawing.MidpointCircle(circle, tmpImage);
+                    CircleDrawing.MidpointCircle(circle, bitmap);
                 }
             }
             foreach (Line line in Database.Lines)
             {
                 if (line.Antialiasing == false && line.Thickness == 1)
                 {
-                    tmpImage = LineDrawing.lineDDA(line, tmpImage);
+                    LineDrawing.lineDDA(line, bitmap);
                 }
                 if (line.Antialiasing == false && line.Thickness != 1)
                 {
-                    tmpImage = LineDrawing.lineDDA_thick(line, tmpImage);
+                    LineDrawing.lineDDA_thick(line, bitmap);
                 }
                 if (line.Antialiasing = true && line.Thickness == 1)
                 {
-                    tmpImage = LineDrawing.WuLine(line, tmpImage);
+                    LineDrawing.WuLine(line, bitmap);
                 }
             }
             foreach (Polygon polygon in Database.Polygons)
             {
                 if (polygon.Antialiasing == true)
                 {
-                    tmpImage = PolygonDrawing.DrawPolygon_Antialiasing(polygon, tmpImage);
+                    PolygonDrawing.DrawPolygon_Antialiasing(polygon, bitmap);
                 }
                 else
                 {
-                    tmpImage = PolygonDrawing.DrawPolygon_DDA(polygon, tmpImage);
+                    PolygonDrawing.DrawPolygon_DDA(polygon, bitmap);
                 }
             }
 
-            return tmpImage;
+            pictureBox1.Image = bitmap;
         }
     }
 }

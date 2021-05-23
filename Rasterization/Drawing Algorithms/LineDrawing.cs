@@ -9,10 +9,8 @@ namespace Rasterization
 {
     public class LineDrawing
     {
-        public Image lineDDA(Line line, Image image)
+        public void lineDDA(Line line, Bitmap bitmap)
         {
-            Bitmap bitmap = new Bitmap(image);
-
             int dx = line.EndPoint.X - line.StartPoint.X;
             int dy = line.EndPoint.Y - line.StartPoint.Y;
             int steps = Math.Abs(dx) > Math.Abs(dy) ? Math.Abs(dx) : Math.Abs(dy);
@@ -26,14 +24,10 @@ namespace Rasterization
                 x += Xinc;
                 y += Yinc;
             }
-
-            return bitmap;
         }
 
-        public Image lineDDA_thick(Line line, Image image)
+        public void lineDDA_thick(Line line, Bitmap bitmap)
         {
-            Bitmap bitmap = new Bitmap(image);
-
             int dx = line.EndPoint.X - line.StartPoint.X;
             int dy = line.EndPoint.Y - line.StartPoint.Y;
             int steps = Math.Abs(dx) > Math.Abs(dy) ? Math.Abs(dx) : Math.Abs(dy);
@@ -69,14 +63,10 @@ namespace Rasterization
                     y += Yinc;
                 }
             }
-
-            return bitmap;
         }
 
-        public Image WuLine(Line line, Image image)
+        public void WuLine(Line line, Bitmap bitmap)
         {
-            Bitmap bitmap = new Bitmap(image);
-
             var L = line.Color;
             var B = Color.FromArgb(255, 255, 255, 255);
             if (Math.Abs(line.EndPoint.X - line.StartPoint.X) >= Math.Abs(line.EndPoint.Y - line.StartPoint.Y))
@@ -133,8 +123,6 @@ namespace Rasterization
                     y += Yinc;
                 }
             }
-
-            return bitmap;
         }
 
         public float modf(float number)

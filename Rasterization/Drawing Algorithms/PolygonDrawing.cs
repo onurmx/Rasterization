@@ -10,9 +10,8 @@ namespace Rasterization
     public class PolygonDrawing
     {
         private LineDrawing LineDrawing = new LineDrawing();
-        public Image DrawPolygon_DDA(Polygon polygon, Image imageSource)
+        public void DrawPolygon_DDA(Polygon polygon, Bitmap bitmap)
         {
-            Image image = imageSource;
             Line line = new Line();
             line.Color = polygon.Color;
             line.Thickness = 1;
@@ -22,18 +21,15 @@ namespace Rasterization
             {
                 line.StartPoint = new Point(polygon.Points[t].X, polygon.Points[t].Y);
                 line.EndPoint = new Point(polygon.Points[t + 1].X, polygon.Points[t + 1].Y);
-                image = LineDrawing.lineDDA(line, image);
+                LineDrawing.lineDDA(line, bitmap);
             }
             line.StartPoint = new Point(polygon.Points.Last().X, polygon.Points.Last().Y);
             line.EndPoint = new Point(polygon.Points.First().X, polygon.Points.First().Y);
-            image = LineDrawing.lineDDA(line, image);
-
-            return image;
+            LineDrawing.lineDDA(line, bitmap);
         }
 
-        public Image DrawPolygon_Antialiasing(Polygon polygon, Image imageSource)
+        public void DrawPolygon_Antialiasing(Polygon polygon, Bitmap bitmap)
         {
-            Image image = imageSource;
             Line line = new Line();
             line.Color = polygon.Color;
             line.Thickness = 1;
@@ -43,13 +39,11 @@ namespace Rasterization
             {
                 line.StartPoint = new Point(polygon.Points[t].X, polygon.Points[t].Y);
                 line.EndPoint = new Point(polygon.Points[t + 1].X, polygon.Points[t + 1].Y);
-                image = LineDrawing.WuLine(line, image);
+                LineDrawing.WuLine(line, bitmap);
             }
             line.StartPoint = new Point(polygon.Points.Last().X, polygon.Points.Last().Y);
             line.EndPoint = new Point(polygon.Points.First().X, polygon.Points.First().Y);
-            image = LineDrawing.WuLine(line, image);
-
-            return image;
+            LineDrawing.WuLine(line, bitmap);
         }
     }
 }
