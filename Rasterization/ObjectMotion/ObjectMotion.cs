@@ -95,11 +95,10 @@ namespace Rasterization
             }
             if (TargetObject is Polygon)
             {
-                for (int i = 0; i < ((Polygon)TargetObject).Points.Count; i++)
+                ((Polygon)TargetObject).Points = ((List<Point>)InitialTargetObjectProperty).Select(p =>
                 {
-                    ((Polygon)TargetObject).Points[i] = new Point(((List<Point>)InitialTargetObjectProperty)[i].X + Difference(MousePosition).X,
-                                                                  ((List<Point>)InitialTargetObjectProperty)[i].Y + Difference(MousePosition).Y);
-                }
+                    return new Point(p.X + Difference(MousePosition).X, p.Y + Difference(MousePosition).Y);
+                }).ToList();
             }
         }
     }
