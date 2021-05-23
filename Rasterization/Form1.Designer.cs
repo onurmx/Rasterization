@@ -148,7 +148,7 @@
             this.groupBox2.Size = new System.Drawing.Size(134, 50);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Drawing Color";
+            this.groupBox2.Text = "Universal Color";
             // 
             // comboBox1
             // 

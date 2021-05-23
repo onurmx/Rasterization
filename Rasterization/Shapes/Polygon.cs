@@ -11,6 +11,7 @@ namespace Rasterization
     {
         public List<Point> Points { get; set; }
         public Color Color { get; set; }
+        public Color FillColor { get; set; }
         public bool Antialiasing { get; set; }
     }
 }

@@ -48,7 +48,7 @@ namespace Rasterization
                 {
                     for (int x = (int)AET[i].Xmin; x <= AET[i + 1].Xmin; x++)
                     {
-                        bitmap.SetPixel(x, y, Color.DarkRed);
+                        bitmap.SetPixel(x, y, polygon.FillColor);
                     }
                 }
                 ++y;

@@ -116,9 +116,7 @@ namespace Rasterization
 
         private void button6_Click(object sender, EventArgs e)
         {
-            //Filling filling = new Filling();
-
-            //pictureBox1.Image = filling.FillPolygon(Database.Polygons[0], pictureBox1.Image);
+            CanvasLogic.DrawingMode = 5;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -207,11 +205,29 @@ namespace Rasterization
 
         private void pictureBox1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            ObjectMotion.InitialMouseLocation = e.Location;
-            ObjectMotion.DeleteRectangle(Database);
+            if (e.Button == MouseButtons.Left)
+            {
+                ObjectMotion.InitialMouseLocation = e.Location;
+                ObjectMotion.DeleteRectangle(Database);
 
-            ObjectMotion = new ObjectMotion();
-            Redrawer();
+                ObjectMotion = new ObjectMotion();
+                Redrawer();
+            }
+            if (e.Button == MouseButtons.Right)
+            {
+                foreach(Polygon polygon in Database.Polygons)
+                {
+                    foreach(Point point in polygon.Points)
+                    {
+                        if (point == e.Location)
+                        {
+                            polygon.FillColor = GetSelectedColor();
+                            Redrawer();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -312,6 +328,10 @@ namespace Rasterization
                 {
                     case false:
                         PolygonDrawing.DrawPolygon_DDA(polygon, bitmap);
+                        if (polygon.FillColor != (new Polygon()).FillColor)
+                        {
+                            Filling.FillPolygon(polygon, bitmap);
+                        }
                         break;
                     case true:
                         PolygonDrawing.DrawPolygon_Antialiasing(polygon, bitmap);
