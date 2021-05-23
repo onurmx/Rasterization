@@ -209,39 +209,52 @@ namespace Rasterization
 
             foreach (Circle circle in Database.Circles)
             {
-                if (circle.Antialiasing == true)
+                switch (circle.Antialiasing)
                 {
-                    CircleDrawing.WuCircle(circle, bitmap);
-                }
-                else
-                {
-                    CircleDrawing.MidpointCircle(circle, bitmap);
+                    case false:
+                        CircleDrawing.MidpointCircle(circle, bitmap);
+                        break;
+                    case true:
+                        CircleDrawing.WuCircle(circle, bitmap);
+                        break;
+                    default:
+                        break;
                 }
             }
             foreach (Line line in Database.Lines)
             {
-                if (line.Antialiasing == false && line.Thickness == 1)
+                switch (line.Antialiasing)
                 {
-                    LineDrawing.lineDDA(line, bitmap);
-                }
-                if (line.Antialiasing == false && line.Thickness != 1)
-                {
-                    LineDrawing.lineDDA_thick(line, bitmap);
-                }
-                if (line.Antialiasing = true && line.Thickness == 1)
-                {
-                    LineDrawing.WuLine(line, bitmap);
+                    case false:
+                        switch (line.Thickness)
+                        {
+                            case 1:
+                                LineDrawing.lineDDA(line, bitmap);
+                                break;
+                            default:
+                                LineDrawing.lineDDA_thick(line, bitmap);
+                                break;
+                        }
+                        break;
+                    case true:
+                        LineDrawing.WuLine(line, bitmap);
+                        break;
+                    default:
+                        break;
                 }
             }
             foreach (Polygon polygon in Database.Polygons)
             {
-                if (polygon.Antialiasing == true)
+                switch (polygon.Antialiasing)
                 {
-                    PolygonDrawing.DrawPolygon_Antialiasing(polygon, bitmap);
-                }
-                else
-                {
-                    PolygonDrawing.DrawPolygon_DDA(polygon, bitmap);
+                    case false:
+                        PolygonDrawing.DrawPolygon_DDA(polygon, bitmap);
+                        break;
+                    case true:
+                        PolygonDrawing.DrawPolygon_Antialiasing(polygon, bitmap);
+                        break;
+                    default:
+                        break;
                 }
             }
 
