@@ -14,8 +14,6 @@ namespace Rasterization
         private float tE { get; set; }
         private float tL { get; set; }
 
-
-
         public Image LiangBarskyClipping(Point p1, Point p2, Rectangle clip, Image image)
         {
             LineDrawing lineDrawing = new LineDrawing();
@@ -37,13 +35,13 @@ namespace Rasterization
             tE = 0;
             tL = 1;
 
-            if (clipT(xMin - p1.X, dx))
+            if (Clip(xMin - p1.X, dx))
             {
-                if (clipT(p1.X - xMax, -dx))
+                if (Clip(p1.X - xMax, -dx))
                 {
-                    if (clipT(yMin - p1.Y, dy))
+                    if (Clip(yMin - p1.Y, dy))
                     {
-                        if (clipT(p1.Y - yMax, -dy))
+                        if (Clip(p1.Y - yMax, -dy))
                         {
                             if (tL < 1)
                             {
@@ -71,30 +69,34 @@ namespace Rasterization
             return bitmap;
         }
 
-        public bool clipT(float numer, float denom)
+        public bool Clip(float numerator, float denominator)
         {
-            if (denom == 0)
+            if (denominator == 0)
             {
-                if (numer > 0)
+                return numerator > 0 ? false : true;
+            }
+            float t = numerator / denominator;
+            if (denominator > 0)
+            {
+                if (t > tL)
                 {
                     return false;
                 }
-                return true;
-            }
-            float t = numer / denom;
-            if (denom > 0)
-            {
-                if (t > tL)
-                    return false;
                 if (t > tE)
+                {
                     tE = t;
+                }
             }
             else
             {
                 if (t < tE)
+                {
                     return false;
+                }
                 if (t < tL)
+                {
                     tL = t;
+                }
             }
             return true;
         }
