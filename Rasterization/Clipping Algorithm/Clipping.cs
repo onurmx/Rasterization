@@ -14,15 +14,13 @@ namespace Rasterization
         private float tE { get; set; }
         private float tL { get; set; }
 
-        public Image LiangBarskyClipping(Point p1, Point p2, Rectangle clip, Image image)
+        private void LiangBarskyClipping(Point p1, Point p2, Rectangle clip, Database database)
         {
             LineDrawing lineDrawing = new LineDrawing();
             Line newLine = new Line();
             newLine.Color = Color.Red;
             newLine.Thickness = 1;
             newLine.Antialiasing = false;
-
-            Bitmap bitmap = new Bitmap(image);
 
             int xMin = clip.TopLeft.X <= clip.BottomRight.X ? clip.TopLeft.X : clip.BottomRight.X;
             int yMin = clip.TopLeft.Y <= clip.BottomRight.Y ? clip.TopLeft.Y : clip.BottomRight.Y;
@@ -64,12 +62,11 @@ namespace Rasterization
                 }
             }
 
-            lineDrawing.lineDDA(newLine, bitmap);
-
-            return bitmap;
+            
+            database.Lines.Add(newLine);
         }
 
-        public bool Clip(float numerator, float denominator)
+        private bool Clip(float numerator, float denominator)
         {
             if (denominator == 0)
             {
@@ -99,6 +96,17 @@ namespace Rasterization
                 }
             }
             return true;
+        }
+
+        public void ClippingUtiliser(Polygon polygon, Database database)
+        {
+            for (int i = 0; i < polygon.Points.Count - 1; i++)
+            {
+                LiangBarskyClipping(polygon.Points[i], polygon.Points[i + 1], database.Rectangles.First(), database);
+            }
+            LiangBarskyClipping(polygon.Points.Last(), polygon.Points.First(), database.Rectangles.First(), database);
+
+            database.Polygons.Remove(polygon);
         }
     }
 }

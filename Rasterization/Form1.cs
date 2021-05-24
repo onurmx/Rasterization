@@ -112,15 +112,15 @@ namespace Rasterization
 
         private void button5_Click(object sender, EventArgs e)
         {
-            CanvasLogic.DrawingMode = 4;
+            if (Database.Rectangles.Count < 1)
+            {
+                CanvasLogic.DrawingMode = 4;
+            }
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            pictureBox1.Image = Clipping.LiangBarskyClipping(Database.Lines[0].StartPoint,
-                                                             Database.Lines[0].EndPoint,
-                                                             Database.Rectangles[0],
-                                                             pictureBox1.Image);
+            CanvasLogic.DrawingMode = 5;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -189,6 +189,43 @@ namespace Rasterization
                             CanvasLogic.DrawingMode = 0;
 
                             Redrawer();
+                        }
+                        break;
+                    case 5:
+                        if(CanvasLogic.tmpRectangle.TopLeft==(new Rectangle()).TopLeft)
+                        {
+                            foreach(Rectangle rectangle in Database.Rectangles)
+                            {
+                                if (e.Location == rectangle.TopLeft || e.Location == rectangle.BottomRight)
+                                {
+                                    CanvasLogic.tmpRectangle = rectangle;
+                                    MessageBox.Show("Clipper rectangle selected");
+                                    break;
+                                }
+                            }
+                        }
+                        if(CanvasLogic.tmpPolygon.Color==(new Polygon()).Color)
+                        {
+                            foreach(Polygon polygon in Database.Polygons)
+                            {
+                                foreach(Point point in polygon.Points)
+                                {
+                                    if (e.Location == point)
+                                    {
+                                        CanvasLogic.tmpPolygon = polygon;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (CanvasLogic.tmpPolygon.Color != (new Polygon()).Color)
+                            {
+                                MessageBox.Show("Subject polygon selected");
+                                Clipping.ClippingUtiliser(CanvasLogic.tmpPolygon, Database);
+                                Redrawer();
+                                CanvasLogic.tmpPolygon = new Polygon();
+                                CanvasLogic.tmpRectangle = new Rectangle();
+                                CanvasLogic.DrawingMode = 0;
+                            }
                         }
                         break;
                     default:
