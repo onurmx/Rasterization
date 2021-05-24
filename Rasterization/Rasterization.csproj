@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CanvasLogic.cs" />
+    <Compile Include="Clipping Algorithm\Clipping.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Drawing Algorithms\CircleDrawing.cs" />
     <Compile Include="Drawing Algorithms\LineDrawing.cs" />

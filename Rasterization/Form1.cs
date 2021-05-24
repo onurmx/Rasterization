@@ -24,6 +24,7 @@ namespace Rasterization
         PolygonDrawing PolygonDrawing = new PolygonDrawing();
         RectangleDrawing RectangleDrawing = new RectangleDrawing();
         Filling Filling = new Filling();
+        Clipping Clipping = new Clipping();
 
         public Form1()
         {
@@ -114,9 +115,12 @@ namespace Rasterization
             CanvasLogic.DrawingMode = 4;
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void button7_Click(object sender, EventArgs e)
         {
-            CanvasLogic.DrawingMode = 5;
+            pictureBox1.Image = Clipping.LiangBarskyClipping(Database.Lines[0].StartPoint,
+                                                             Database.Lines[0].EndPoint,
+                                                             Database.Rectangles[0],
+                                                             pictureBox1.Image);
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -215,9 +219,9 @@ namespace Rasterization
             }
             if (e.Button == MouseButtons.Right)
             {
-                foreach(Polygon polygon in Database.Polygons)
+                foreach (Polygon polygon in Database.Polygons)
                 {
-                    foreach(Point point in polygon.Points)
+                    foreach (Point point in polygon.Points)
                     {
                         if (point == e.Location)
                         {
@@ -347,7 +351,5 @@ namespace Rasterization
 
             pictureBox1.Image = bitmap;
         }
-
-
     }
 }
