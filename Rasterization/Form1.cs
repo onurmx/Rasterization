@@ -82,6 +82,7 @@ namespace Rasterization
             Database.Circles.Clear();
             Database.Lines.Clear();
             Database.Polygons.Clear();
+            Database.Polygons.Clear();
         }
 
         private void button2_Click(object sender, EventArgs e)

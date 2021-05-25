@@ -138,6 +138,8 @@ namespace Rasterization
                 rectangleSerializableStruct.cR = rectangle.Color.R;
                 rectangleSerializableStruct.cG = rectangle.Color.G;
                 rectangleSerializableStruct.cB = rectangle.Color.B;
+
+                shapesSerializableStruct.rectangleSerializableStructs.Add(rectangleSerializableStruct);
             }
         }
 
