@@ -123,6 +123,15 @@ namespace Rasterization
             CanvasLogic.DrawingMode = 5;
         }
 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Bitmap bitmap = new Bitmap(pictureBox1.Image);
+            Filling.FillPolygonWithImage(Database.Polygons.First(),
+                                         Properties.Resources.Yoda,
+                                         bitmap);
+            pictureBox1.Image = bitmap;
+        }
+
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)

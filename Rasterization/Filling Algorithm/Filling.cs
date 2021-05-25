@@ -56,5 +56,35 @@ namespace Rasterization
                 AET.Select(e => { e.Xmin += e.OneOverM; return e; }).ToList();
             }
         }
+
+        public void FillPolygonWithImage(Polygon polygon, Bitmap imageSource, Bitmap bitmap)
+        {
+            int xMin = polygon.Points.OrderBy(p => p.X).First().X;
+            int yMin = polygon.Points.OrderBy(p => p.Y).First().Y;
+            int xMax = polygon.Points.OrderBy(p => p.X).Last().X;
+            int yMax = polygon.Points.OrderBy(p => p.Y).Last().Y;
+
+            Bitmap stretchedBitmap = new Bitmap(imageSource, xMax - xMin + 1, yMax - yMin + 1);
+
+            List<EdgeTableEntry> ET = GetEdgeTable(polygon.Points);
+            int y = ET.First().Ymin;
+            List<EdgeTableEntry> AET = new List<EdgeTableEntry>();
+            while (ET.Any() || AET.Any())
+            {
+                AET.AddRange(ET.Select(entry => entry).Where(entry => entry.Ymin == y).ToList());
+                ET.RemoveAll(entry => entry.Ymin == y);
+                AET.Sort((p, q) => p.Xmin.CompareTo(q.Xmin));
+                for (int i = 0; i < AET.Count; i += 2)
+                {
+                    for (int x = (int)AET[i].Xmin; x <= AET[i + 1].Xmin; x++)
+                    {
+                        bitmap.SetPixel(x, y, stretchedBitmap.GetPixel(x - xMin, y - yMin));
+                    }
+                }
+                ++y;
+                AET.RemoveAll(e => e.Ymax == y);
+                AET.Select(e => { e.Xmin += e.OneOverM; return e; }).ToList();
+            }
+        }
     }
 }
