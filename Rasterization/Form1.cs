@@ -27,6 +27,7 @@ namespace Rasterization
         RectangleDrawing RectangleDrawing = new RectangleDrawing();
         Filling Filling = new Filling();
         Clipping Clipping = new Clipping();
+        Bitmap FillingPicture { get; set; }
 
         public Form1()
         {
@@ -129,6 +130,13 @@ namespace Rasterization
 
         private void button6_Click(object sender, EventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Load Image";
+            openFileDialog.Filter = "JPG Image File|*.jpg|JPEG Image File|*.jpeg|PNG Image File|*.png";
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                FillingPicture = (Bitmap)Bitmap.FromFile(openFileDialog.FileName);
+            }
             CanvasLogic.DrawingMode = 6;
         }
 
@@ -201,9 +209,9 @@ namespace Rasterization
                         }
                         break;
                     case 5:
-                        if(CanvasLogic.tmpRectangle.TopLeft==(new Rectangle()).TopLeft)
+                        if (CanvasLogic.tmpRectangle.TopLeft == (new Rectangle()).TopLeft)
                         {
-                            foreach(Rectangle rectangle in Database.Rectangles)
+                            foreach (Rectangle rectangle in Database.Rectangles)
                             {
                                 if (e.Location == rectangle.TopLeft || e.Location == rectangle.BottomRight)
                                 {
@@ -213,11 +221,11 @@ namespace Rasterization
                                 }
                             }
                         }
-                        if(CanvasLogic.tmpPolygon.Color==(new Polygon()).Color)
+                        if (CanvasLogic.tmpPolygon.Color == (new Polygon()).Color)
                         {
-                            foreach(Polygon polygon in Database.Polygons)
+                            foreach (Polygon polygon in Database.Polygons)
                             {
-                                foreach(Point point in polygon.Points)
+                                foreach (Point point in polygon.Points)
                                 {
                                     if (e.Location == point)
                                     {
@@ -278,7 +286,7 @@ namespace Rasterization
                     }
                 }
             }
-            if(e.Button == MouseButtons.Middle)
+            if (e.Button == MouseButtons.Middle)
             {
                 foreach (Polygon polygon in Database.Polygons)
                 {
@@ -400,7 +408,7 @@ namespace Rasterization
                         if (polygon.FillBackgroundImage != (new Polygon()).FillBackgroundImage)
                         {
                             Filling.FillPolygonWithImage(polygon,
-                                                         Properties.Resources.Yoda,
+                                                         FillingPicture,
                                                          bitmap);
                         }
                         break;
