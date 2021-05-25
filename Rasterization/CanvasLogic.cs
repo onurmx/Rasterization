@@ -14,6 +14,7 @@ namespace Rasterization
                                                   //3-Polygon(Start Recording)
                                                   //4-Rectangle
                                                   //5-Filling
+                                                  //6-Filling with background
         public Circle tmpCircle { get; set; } = new Circle();
         public Line tmpLine { get; set; } = new Line();
         public Polygon tmpPolygon { get; set; } = new Polygon();

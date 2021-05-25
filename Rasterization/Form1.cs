@@ -125,11 +125,7 @@ namespace Rasterization
 
         private void button6_Click(object sender, EventArgs e)
         {
-            Bitmap bitmap = new Bitmap(pictureBox1.Image);
-            Filling.FillPolygonWithImage(Database.Polygons.First(),
-                                         Properties.Resources.Yoda,
-                                         bitmap);
-            pictureBox1.Image = bitmap;
+            CanvasLogic.DrawingMode = 6;
         }
 
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
@@ -278,6 +274,21 @@ namespace Rasterization
                     }
                 }
             }
+            if(e.Button == MouseButtons.Middle)
+            {
+                foreach (Polygon polygon in Database.Polygons)
+                {
+                    foreach (Point point in polygon.Points)
+                    {
+                        if (point == e.Location)
+                        {
+                            polygon.FillBackgroundImage = true;
+                            Redrawer();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -381,6 +392,12 @@ namespace Rasterization
                         if (polygon.FillColor != (new Polygon()).FillColor)
                         {
                             Filling.FillPolygon(polygon, bitmap);
+                        }
+                        if (polygon.FillBackgroundImage != (new Polygon()).FillBackgroundImage)
+                        {
+                            Filling.FillPolygonWithImage(polygon,
+                                                         Properties.Resources.Yoda,
+                                                         bitmap);
                         }
                         break;
                     case true:
