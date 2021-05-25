@@ -37,7 +37,22 @@ namespace Rasterization
         public int cR;
         public int cG;
         public int cB;
+        public int fA;
+        public int fR;
+        public int fG;
+        public int fB;
+        public bool FillBackgroundImage;
         public bool Antialiasing;
+    }
+
+    public struct RectangleSerializableStruct
+    {
+        public Point TopLeft;
+        public Point BottomRight;
+        public int cA;
+        public int cR;
+        public int cG;
+        public int cB;
     }
 
     public struct ShapesSerializableStruct
@@ -45,6 +60,7 @@ namespace Rasterization
         public List<CircleSerializableStruct> circleSerializableStructs;
         public List<LineSerializableStruct> lineSerializableStructs;
         public List<PolygonSerializableStruct> polygonSerializableStructs;
+        public List<RectangleSerializableStruct> rectangleSerializableStructs;
     }
 
     public class Serialization
@@ -54,12 +70,17 @@ namespace Rasterization
         public List<Circle> circles = new List<Circle>();
         public List<Line> lines = new List<Line>();
         public List<Polygon> polygons = new List<Polygon>();
+        public List<Rectangle> rectangles = new List<Rectangle>();
 
-        public void Formatter(List<Circle> circles, List<Line> lines, List<Polygon> polygons)
+        public void Formatter(List<Circle> circles,
+                              List<Line> lines,
+                              List<Polygon> polygons,
+                              List<Rectangle> rectangles)
         {
             shapesSerializableStruct.circleSerializableStructs = new List<CircleSerializableStruct>();
             shapesSerializableStruct.lineSerializableStructs = new List<LineSerializableStruct>();
             shapesSerializableStruct.polygonSerializableStructs = new List<PolygonSerializableStruct>();
+            shapesSerializableStruct.rectangleSerializableStructs = new List<RectangleSerializableStruct>();
 
             foreach (Circle circle in circles)
             {
@@ -98,9 +119,25 @@ namespace Rasterization
                 polygonSerializableStruct.cR = polygon.Color.R;
                 polygonSerializableStruct.cG = polygon.Color.G;
                 polygonSerializableStruct.cB = polygon.Color.B;
+                polygonSerializableStruct.fA = polygon.FillColor.A;
+                polygonSerializableStruct.fR = polygon.FillColor.R;
+                polygonSerializableStruct.fG = polygon.FillColor.G;
+                polygonSerializableStruct.fB = polygon.FillColor.B;
+                polygonSerializableStruct.FillBackgroundImage = polygon.FillBackgroundImage;
                 polygonSerializableStruct.Antialiasing = polygon.Antialiasing;
 
                 shapesSerializableStruct.polygonSerializableStructs.Add(polygonSerializableStruct);
+            }
+
+            foreach (Rectangle rectangle in rectangles)
+            {
+                RectangleSerializableStruct rectangleSerializableStruct = new RectangleSerializableStruct();
+                rectangleSerializableStruct.TopLeft = rectangle.TopLeft;
+                rectangleSerializableStruct.BottomRight = rectangle.BottomRight;
+                rectangleSerializableStruct.cA = rectangle.Color.A;
+                rectangleSerializableStruct.cR = rectangle.Color.R;
+                rectangleSerializableStruct.cG = rectangle.Color.G;
+                rectangleSerializableStruct.cB = rectangle.Color.B;
             }
         }
 
@@ -143,9 +180,27 @@ namespace Rasterization
                                                polygonSerializableStruct.cR,
                                                polygonSerializableStruct.cG,
                                                polygonSerializableStruct.cB);
+                polygon.FillColor = Color.FromArgb(polygonSerializableStruct.fA,
+                                                   polygonSerializableStruct.fR,
+                                                   polygonSerializableStruct.fG,
+                                                   polygonSerializableStruct.fB);
+                polygon.FillBackgroundImage = polygonSerializableStruct.FillBackgroundImage;
                 polygon.Antialiasing = polygonSerializableStruct.Antialiasing;
 
                 polygons.Add(polygon);
+            }
+
+            foreach (RectangleSerializableStruct rectangleSerializableStruct in shapesSerializableStruct.rectangleSerializableStructs)
+            {
+                Rectangle rectangle = new Rectangle();
+                rectangle.TopLeft = rectangleSerializableStruct.TopLeft;
+                rectangle.BottomRight = rectangleSerializableStruct.BottomRight;
+                rectangle.Color = Color.FromArgb(rectangleSerializableStruct.cA,
+                                                 rectangleSerializableStruct.cR,
+                                                 rectangleSerializableStruct.cG,
+                                                 rectangleSerializableStruct.cB);
+
+                rectangles.Add(rectangle);
             }
         }
     }

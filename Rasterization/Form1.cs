@@ -51,7 +51,7 @@ namespace Rasterization
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Serialization serialization = new Serialization();
-            serialization.Formatter(Database.Circles, Database.Lines, Database.Polygons);
+            serialization.Formatter(Database.Circles, Database.Lines, Database.Polygons, Database.Rectangles);
             XmlSerializer serializer = new XmlSerializer(typeof(ShapesSerializableStruct));
             TextWriter filestream = new StreamWriter(@".\output.xml");
             serializer.Serialize(filestream, serialization.shapesSerializableStruct);
@@ -71,6 +71,7 @@ namespace Rasterization
             Database.Circles = serialization.circles;
             Database.Lines = serialization.lines;
             Database.Polygons = serialization.polygons;
+            Database.Rectangles = serialization.rectangles;
 
             Redrawer();
         }
