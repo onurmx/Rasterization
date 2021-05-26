@@ -4,7 +4,7 @@ Rasterization application which provides a toolset for drawing multiple shapes w
 ## Drawing Algorithms
 ### Line Drawing
 1. DDA Algorithm for drawing lines.
-2. DDA Algorithm with Copy Pixels technic for drawing thick lines.
+2. DDA Algorithm with Copying Pixels technic for drawing thick lines.
 3. Xiaolin Wu's Line Algorithm for applying antialiasing to lines.
 
 ### Circle Drawing
@@ -13,13 +13,13 @@ Rasterization application which provides a toolset for drawing multiple shapes w
 
 ### Polygon Drawing
 1. Drawing polygons with using DDA Line Algorithm.
-2. Drawing antialiased algorithms with using Xiaolin Wu's Line Algorithm.
+2. Drawing antialiased polygons with using Xiaolin Wu's Line Algorithm.
 
 ### Rectangle Drawing
 1. Drawing rectangles with using DDA Line Algorithm.
 
 ## Clipping Algorithm
-Liang-Barsky Algorithm is used to clipping polygons edges to a rectangle.
+Liang-Barsky Algorithm is used to clipping polygon edges to a rectangle.
 
 ## Filling Algorithms
 1. Scan-Line Algorithm with Active Edge Table is used to filling polygons with solid colors.
